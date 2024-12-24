@@ -1,3 +1,5 @@
+*.uvguix.*
+*.uvgui.*
 *.lst
 *.o
 *.d
