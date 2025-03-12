@@ -26,6 +26,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "mpu6050.h"
+#include "tim.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -128,10 +129,10 @@ void StartDefaultTask(void *argument)
   /* Infinite loop */
   for(;;)
   {
-		HAL_GPIO_WritePin(LED0_GPIO_Port,LED0_Pin,GPIO_PIN_SET);
+		//HAL_GPIO_WritePin(LED0_GPIO_Port,LED0_Pin,GPIO_PIN_SET);
 		HAL_GPIO_WritePin(LED1_GPIO_Port,LED1_Pin,GPIO_PIN_RESET);
     osDelay(500);
-		HAL_GPIO_WritePin(LED0_GPIO_Port,LED0_Pin,GPIO_PIN_RESET);
+		//HAL_GPIO_WritePin(LED0_GPIO_Port,LED0_Pin,GPIO_PIN_RESET);
 		HAL_GPIO_WritePin(LED1_GPIO_Port,LED1_Pin,GPIO_PIN_SET);
 		osDelay(500);
   }
@@ -151,6 +152,7 @@ void StartTask02(void *argument)
 	float Acel[3];
 	float Gyro[3];
 	float Temp;
+	int cnt = 1000;
 	MPU6050_Init();
 	while(!MPU6050ReadID()){}
   /* Infinite loop */
@@ -159,6 +161,10 @@ void StartTask02(void *argument)
 		MPU6050ReadAcc(Acel);
 		MPU6050ReadGyro(Gyro);
 		MPU6050_ReturnTemp(&Temp);
+		cnt += 10;
+		if(cnt > 1600) cnt = 1000;
+		htim3.Instance->CCR1 = cnt;
+		htim3.Instance->CCR2 = cnt;
     osDelay(100);
   }
   /* USER CODE END StartTask02 */
